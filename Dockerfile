@@ -16,5 +16,7 @@ RUN python3 -m pip install selenium
 RUN python3 -m pip install ipython
 RUN python3 -m pip install PyVirtualDisplay
 RUN python3 -m pip install xlrd
+RUN python3 -m pip install pystan
+RUN python3 -m pip install fbprophet
 
 ADD . /usr/wd/urgency_predictor/.
