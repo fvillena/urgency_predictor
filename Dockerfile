@@ -17,4 +17,4 @@ RUN python3 -m pip install ipython
 RUN python3 -m pip install PyVirtualDisplay
 RUN python3 -m pip install xlrd
 
-ADD . /usr/wd/.
+ADD . /usr/wd/urgency_predictor/.
