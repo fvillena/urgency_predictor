@@ -8,5 +8,5 @@ scraped_data_file_path = escreiper.scrape()
 transformer = Transformer(scraped_data_file_path)
 transformer.write()
 
-dw = DatabaseWriter(wd+"/../urgency_predictor_data/data.sqlite","real","/home/fvillena/code/urgency_predictor/real_data.csv")
+dw = DatabaseWriter(wd+"/../urgency_predictor_data/data.sqlite","real",wd+"/real_data.csv")
 dw.write()
