@@ -16,3 +16,5 @@ RUN python3 -m pip install selenium
 RUN python3 -m pip install ipython
 RUN python3 -m pip install PyVirtualDisplay
 RUN python3 -m pip install xlrd
+
+ADD . /usr/wd/.
