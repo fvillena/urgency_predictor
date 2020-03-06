@@ -7,6 +7,7 @@ logger = logging.getLogger(__name__)
 
 class Transformer:
     def __init__(self,raw_data_file_path):
+        logger.info("transforming data")
         self.raw_data_file_path = raw_data_file_path
         self.wd = "/".join(raw_data_file_path.split("/")[:-1])+"/"
         self.df = pd.read_excel(raw_data_file_path,skiprows=16,skipfooter=561,na_values="-")
@@ -15,8 +16,10 @@ class Transformer:
         self.df.date = pd.to_datetime(self.df.date)
         self.df.dropna(inplace=True)
     def write(self,filename = "real_data.csv"):
+        logger.info("writing intermediate file")
         processed_data_file_path = self.wd + filename
         self.df.to_csv(processed_data_file_path,index=False)
+        logger.info("removing downloaded file")
         os.remove(self.raw_data_file_path)
 
 class DatabaseWriter:
