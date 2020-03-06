@@ -1,4 +1,3 @@
-import pandas as pd
 from selenium import webdriver
 import os
 from pyvirtualdisplay import Display
@@ -27,10 +26,4 @@ class Scraper:
                     downloaded_file_path = self.wd+filename
                     download_ready=True
         self.driver.quit()
-        df = pd.read_excel(downloaded_file_path,skiprows=16,skipfooter=560,na_values="-")
-        df = df.melt(id_vars=['Total de atenciones de urgencia'])
-        df.columns = ["category","date","value"]
-        df.date = pd.to_datetime(df.date)
-        df.sort_values(["category","date"])
-        df.to_csv(self.wd+"data.csv",index=False)
-        os.remove(downloaded_file_path)
+        return (downloaded_file_path)
