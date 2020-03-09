@@ -20,3 +20,9 @@ RUN python3 -m pip install pystan
 RUN python3 -m pip install fbprophet
 
 ADD . /usr/wd/urgency_predictor/.
+
+RUN cd /usr/wd/urgency_predictor/
+
+RUN python3 download_and_predict.py
+
+RUN python3 app.py
