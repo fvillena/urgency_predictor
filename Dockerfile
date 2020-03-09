@@ -1,26 +1,12 @@
 FROM ubuntu
 
 RUN apt update
-RUN apt install python3 -y
-RUN apt install chromium-browser chromium-chromedriver -y
-RUN apt install xvfb -y
-RUN apt install bash -y
-RUN apt install python3-pip -y
+RUN apt install python3 chromium-browser chromium-chromedriver xvfb bash python3-pip cron -y
+
 
 RUN python3 -m pip install --upgrade pip
-RUN python3 -m pip install selenium
-RUN python3 -m pip install ipython
-RUN python3 -m pip install PyVirtualDisplay
-RUN python3 -m pip install xlrd
-RUN python3 -m pip install pystan
-RUN python3 -m pip install fbprophet
-RUN python3 -m pip install flask
-RUN python3 -m pip install flask_sqlalchemy
-RUN python3 -m pip install flask_marshmallow
-RUN python3 -m pip install marshmallow-sqlalchemy
-RUN python3 -m pip install plotly
+RUN python3 -m pip install selenium ipython PyVirtualDisplay xlrd pystan fbprophet flask flask_sqlalchemy flask_marshmallow marshmallow-sqlalchemy plotly --no-install-recommends
 
-RUN apt install cron -y
 
 ADD . /usr/wd/urgency_predictor/.
 
