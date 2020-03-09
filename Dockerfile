@@ -1,15 +1,11 @@
-FROM alpine
+FROM ubuntu
 
-RUN echo "http://dl-4.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories && \
-    echo "http://dl-4.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
-    echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
-
-RUN apk update
-RUN apk add build-base python3 python3-dev py3-pip py3-pandas
-RUN apk add chromium chromium-chromedriver
-RUN apk add xvfb
-RUN apk add bash
-RUN apk add xdpyinfo
+RUN apt update
+RUN apt install python3 -y
+RUN apt install chromium-browser chromium-chromedriver -y
+RUN apt install xvfb -y
+RUN apt install bash -y
+RUN apt install python3-pip -y
 
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install selenium
@@ -18,11 +14,18 @@ RUN python3 -m pip install PyVirtualDisplay
 RUN python3 -m pip install xlrd
 RUN python3 -m pip install pystan
 RUN python3 -m pip install fbprophet
+RUN python3 -m pip install flask
+RUN python3 -m pip install flask_sqlalchemy
+RUN python3 -m pip install flask_marshmallow
+RUN python3 -m pip install marshmallow-sqlalchemy
+RUN python3 -m pip install plotly
+
+RUN apt install cron -y
 
 ADD . /usr/wd/urgency_predictor/.
 
-RUN cd /usr/wd/urgency_predictor/
-
-RUN python3 download_and_predict.py
-
-RUN python3 app.py
+RUN chmod 755 /usr/wd/urgency_predictor/daemon.sh /usr/wd/urgency_predictor/entry.sh
+RUN crontab /usr/wd/urgency_predictor/crontab.txt
+RUN bash /usr/wd/urgency_predictor/entry.sh
+CMD ["python3","/usr/wd/urgency_predictor/download_and_predict.py"]
+CMD ["python3","/usr/wd/urgency_predictor/app.py"]
