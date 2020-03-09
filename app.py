@@ -1,10 +1,15 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template 
 from flask_sqlalchemy import SQLAlchemy
 import os
 from sqlalchemy.ext.declarative import declarative_base
 from flask_marshmallow import Marshmallow
 from sqlalchemy import and_
 import datetime
+import plotly
+import plotly.graph_objs as go
+import numpy as np
+import pandas as pd
+import json
 
 Base = declarative_base()
 
@@ -53,11 +58,50 @@ class ForecastedSchema(ma.Schema):
 reals_schema = RealSchema(many=True)
 forecasteds_schema = ForecastedSchema(many=True)
 
+def create_plot():
+
+
+    current_date = datetime.date.today()
+    starting_date = current_date - datetime.timedelta(days=30)
+    all_reals = Real.query.filter_by(
+        category="TOTAL CAUSAS SISTEMA RESPIRATORIO").filter(
+        and_(Real.date >= starting_date)).all()
+    result_real = reals_schema.dump(all_reals)
+
+    end_date = current_date + datetime.timedelta(days=60)
+    all_forecasteds = Forecasted.query.filter_by(
+        category="TOTAL CAUSAS SISTEMA RESPIRATORIO").filter(
+        and_(Forecasted.date >= current_date,Forecasted.date <= end_date)).all()
+    result_forecasted = forecasteds_schema.dump(all_forecasteds)
+
+    df_real = pd.DataFrame.from_dict(result_real) 
+    df_forecasted = pd.DataFrame.from_dict(result_forecasted) 
+
+
+    data = [
+        go.Line(
+            x=df_real['date'], # assign x as the dataframe column 'x'
+            y=df_real['value'],
+            name="Real"
+        ),
+        go.Line(
+            x=df_forecasted['date'], # assign x as the dataframe column 'x'
+            y=df_forecasted['value'],
+            name="Estimado"
+        )
+    ]
+
+    graphJSON = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
+
+    return graphJSON
 
 @app.route("/real", methods=["GET"])
 def get_real():
     current_date = datetime.date.today()
-    days = int(request.args.get('days'))
+    try:
+        days = int(request.args.get('days'))
+    except:
+        days = 30
     starting_date = current_date - datetime.timedelta(days=days)
     all_reals = Real.query.filter_by(
         category="TOTAL CAUSAS SISTEMA RESPIRATORIO").filter(
@@ -78,8 +122,10 @@ def get_forecasted():
 
 
 @app.route("/")
-def hello():
-    return "Hello World!"
+def index():
+    bar = create_plot()
+    return render_template('index.html', plot=bar)
+
 
 
 if __name__ == '__main__':
