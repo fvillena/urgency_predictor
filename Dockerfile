@@ -12,6 +12,4 @@ ADD . /usr/wd/urgency_predictor/.
 
 RUN chmod 755 /usr/wd/urgency_predictor/daemon.sh /usr/wd/urgency_predictor/entry.sh
 RUN crontab /usr/wd/urgency_predictor/crontab.txt
-RUN bash /usr/wd/urgency_predictor/entry.sh
-CMD ["python3","/usr/wd/urgency_predictor/download_and_predict.py"]
-CMD ["python3","/usr/wd/urgency_predictor/app.py"]
+CMD ["bash","/usr/wd/urgency_predictor/entry.sh"]
