@@ -91,7 +91,16 @@ def create_plot():
         )
     ]
 
-    graphJSON = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
+    layout = {
+        "xaxis":{
+            "title":"Fecha"
+            },
+        "yaxis":{
+            "title":"Atenciones por Urgencia Respiratoria"
+            }
+    }
+    fig = dict(data=data,layout=layout)
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
     return graphJSON
 
@@ -119,7 +128,10 @@ def get_forecasted():
         and_(Forecasted.date >= current_date,Forecasted.date <= end_date)).all()
     result = forecasteds_schema.dump(all_forecasteds)
     return jsonify(result)
+@app.route("/plot", methods=["GET"])
+def plot():
 
+    return create_plot()
 
 @app.route("/")
 def index():
@@ -129,4 +141,4 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run("0.0.0.0",debug=True)
+    app.run("0.0.0.0",debug=False)
