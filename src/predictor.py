@@ -9,7 +9,7 @@ class Predictor:
         self.category = category
         self.db_location = db_location
         con = sqlite3.connect(db_location)
-        self.real_data = pd.read_sql_query("""select * from real where date between date("now", "-2 years") AND date("now") and category = "{}" """.format(category), con)
+        self.real_data = pd.read_sql_query("""select * from real where date between date("now", "-3 years") AND date("now", "-7 days") and category = "{}" """.format(category), con)
         self.real_data["date"] = pd.to_datetime(self.real_data["date"])
         self.real_data = self.real_data[["date","value"]].sort_values("date")
         self.real_data.columns = ["ds","y"]
