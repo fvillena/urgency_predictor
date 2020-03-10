@@ -43,8 +43,11 @@ class DatabaseWriter:
             elif number_of_rows==1:
                 rowid_query = """SELECT id FROM '{}' WHERE category = '{}' AND date = '{}'""".format(self.table,category,date)
                 rowid = self.cursor.execute(rowid_query).fetchone()[0]
-                logger.info("updating value of {} in {}: {}".format(rowid, self.table, value))
-                self.cursor.execute("""UPDATE '{}' SET value = '{}' WHERE id = {}""".format(self.table,value,rowid))
+                db_value_query = """SELECT * FROM '{}' WHERE id = '{}'""".format(self.table,rowid)
+                db_value = self.cursor.execute(db_value_query).fetchone()[3]
+                if db_value != value:
+                    logger.info("updating value of {} in {}: from {} to {}".format(rowid, self.table, db_value, value))
+                    self.cursor.execute("""UPDATE '{}' SET value = '{}' WHERE id = {}""".format(self.table,value,rowid))
             else:
                 logging.error("integrity error")
         logging.info("writing changes")
