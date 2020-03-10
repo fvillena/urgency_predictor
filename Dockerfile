@@ -12,4 +12,5 @@ ADD . /usr/wd/urgency_predictor/.
 
 RUN chmod 755 /usr/wd/urgency_predictor/daemon.sh /usr/wd/urgency_predictor/entry.sh
 RUN crontab /usr/wd/urgency_predictor/crontab.txt
-CMD ["bash","/usr/wd/urgency_predictor/entry.sh"]
+WORKDIR /usr/wd/urgency_predictor/
+CMD ["bash","entry.sh"]
