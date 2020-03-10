@@ -1,4 +1,3 @@
 #!/bin/sh
-
-# code goes here.
-python3 /usr/wd/urgency_predictor/download_and_predict.py
+cd /usr/wd/urgency_predictor/
+python3 download_and_predict.py
