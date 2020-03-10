@@ -62,7 +62,7 @@ def create_plot():
 
 
     current_date = datetime.date.today()
-    starting_date = current_date - datetime.timedelta(days=30)
+    starting_date = current_date - datetime.timedelta(days=60)
     all_reals = Real.query.filter_by(
         category="TOTAL CAUSAS SISTEMA RESPIRATORIO").filter(
         and_(Real.date >= starting_date)).all()
