@@ -1,7 +1,7 @@
 FROM debian
 
 RUN apt update
-RUN apt install python3 chromium chromium-driver xvfb bash python3-pip cron --no-install-recommends -y
+RUN apt install python3 build-essential python-dev python3-dev chromium chromium-driver xvfb bash python3-setuptools python3-pip cron --no-install-recommends -y
 
 
 RUN python3 -m pip install --upgrade pip
