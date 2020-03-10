@@ -2,6 +2,8 @@ from selenium import webdriver
 import os
 from pyvirtualdisplay import Display
 import logging
+import datetime
+from selenium.webdriver.common.keys import Keys
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 class Scraper:
@@ -18,6 +20,18 @@ class Scraper:
     def scrape(self, url=r"http://cognos.deis.cl/ibmcognos/cgi-bin/cognos.cgi?b_action=cognosViewer&ui.action=run&ui.object=%2fcontent%2ffolder%5b%40name%3d%27PUB%27%5d%2ffolder%5b%40name%3d%27REPORTES%27%5d%2ffolder%5b%40name%3d%27Atenciones%20de%20Urgencia%27%5d%2freport%5b%40name%3d%27Atenciones%20Urgencia%20-%20Vista%20diaria%20-%20Servicios%27%5d&ui.name=Atenciones%20Urgencia%20-%20Vista%20diaria%20-%20Servicios&run.outputFormat=&run.prompt=true"):
         logger.info("initial page")
         self.driver.get(url)
+        days = 30
+        offset = 0
+        current_date = datetime.date.today()
+        starting_date = str(current_date - datetime.timedelta(days=days+offset))
+        end_date = str(current_date - datetime.timedelta(days=offset))
+        logger.info("entering dates")
+        input_start = self.driver.find_elements_by_xpath("//input[@class='clsSelectDateEditBox']")[0]
+        input_start.clear()
+        input_start.send_keys(starting_date)
+        input_end = self.driver.find_elements_by_xpath("//input[@class='clsSelectDateEditBox']")[1]
+        input_end.clear()
+        input_end.send_keys(end_date)
         logger.info("pressing continue")
         self.driver.find_element_by_xpath("//button[text()='Continuar']").click()
         logger.info("waiting for page to load")
