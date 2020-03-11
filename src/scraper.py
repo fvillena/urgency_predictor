@@ -43,6 +43,7 @@ class Scraper:
                 self.driver.find_element_by_xpath("//*[text()='Descargar como Excel']").click()
                 break
             if (current_time - start_time) > 30:
+                self.driver.quit()
                 raise TimeoutError('button timeout') 
         logger.info("downloading file")
         start_time = time.time()
@@ -54,6 +55,7 @@ class Scraper:
                     downloaded_file_path = self.wd+filename
                     download_ready=True
                 if (current_time - start_time) > 30:
+                    self.driver.quit()
                     raise TimeoutError('download timeout')
         self.driver.quit()
         logger.info("closing scraper")
