@@ -5,7 +5,7 @@ RUN apt install python3 build-essential python-dev python3-dev chromium chromium
 
 
 RUN python3 -m pip install --upgrade pip
-RUN python3 -m pip install selenium ipython PyVirtualDisplay xlrd pystan fbprophet flask flask_sqlalchemy flask_marshmallow marshmallow-sqlalchemy plotly
+RUN python3 -m pip install selenium ipython PyVirtualDisplay xlrd pystan fbprophet flask flask_sqlalchemy flask_marshmallow marshmallow-sqlalchemy flask-cors plotly
 
 
 ADD . /usr/wd/urgency_predictor/.

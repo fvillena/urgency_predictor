@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, render_template 
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS, cross_origin
 import os
 from sqlalchemy.ext.declarative import declarative_base
 from flask_marshmallow import Marshmallow
@@ -14,7 +15,8 @@ import json
 Base = declarative_base()
 
 app = Flask(__name__)
-
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, '../urgency_predictor_data/data.sqlite')
 db = SQLAlchemy(app)
@@ -108,6 +110,7 @@ def create_plot(json_response=False):
         return graphJSON
 
 @app.route("/real", methods=["GET"])
+@cross_origin()
 def get_real():
     current_date = datetime.date.today()
     try:
@@ -122,6 +125,7 @@ def get_real():
     return jsonify(result)
 
 @app.route("/forecasted", methods=["GET"])
+@cross_origin()
 def get_forecasted():
     current_date = datetime.date.today()
     days = int(request.args.get('days'))
@@ -132,6 +136,7 @@ def get_forecasted():
     result = forecasteds_schema.dump(all_forecasteds)
     return jsonify(result)
 @app.route("/plot", methods=["GET"])
+@cross_origin()
 def plot():
 
     return create_plot(True)
