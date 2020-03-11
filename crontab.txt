@@ -1,1 +1,1 @@
-*/30 * * * * /usr/wd/urgency_predictor/daemon.sh >> /var/log/script.log
+0 * * * * /usr/wd/urgency_predictor/daemon.sh >> /var/log/script.log
