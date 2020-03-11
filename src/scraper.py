@@ -3,6 +3,7 @@ import os
 from pyvirtualdisplay import Display
 import logging
 import datetime
+import time
 from selenium.webdriver.common.keys import Keys
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -35,17 +36,25 @@ class Scraper:
         logger.info("pressing continue")
         self.driver.find_element_by_xpath("//button[text()='Continuar']").click()
         logger.info("waiting for page to load")
+        start_time = time.time()
         while True:
+            current_time = time.time()
             if self.driver.find_elements_by_xpath("//*[text()='Descargar como Excel']"):
                 self.driver.find_element_by_xpath("//*[text()='Descargar como Excel']").click()
                 break
+            if (current_time - start_time) > 30:
+                raise TimeoutError('button timeout') 
         logger.info("downloading file")
+        start_time = time.time()
         download_ready=False
-        while download_ready == False:
+        while ((download_ready == False)):
+            current_time = time.time()
             for filename in os.listdir(self.wd):
                 if filename.endswith("xlsx"):
                     downloaded_file_path = self.wd+filename
                     download_ready=True
+                if (current_time - start_time) > 30:
+                    raise TimeoutError('download timeout')
         self.driver.quit()
         logger.info("closing scraper")
         return (downloaded_file_path)
