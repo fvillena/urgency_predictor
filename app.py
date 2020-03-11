@@ -58,7 +58,7 @@ class ForecastedSchema(ma.Schema):
 reals_schema = RealSchema(many=True)
 forecasteds_schema = ForecastedSchema(many=True)
 
-def create_plot():
+def create_plot(json_response=False):
 
 
     current_date = datetime.date.today()
@@ -101,8 +101,11 @@ def create_plot():
     }
     fig = dict(data=data,layout=layout)
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-
-    return graphJSON
+    if json_response:
+        graphJSON = json.loads(graphJSON)
+        return jsonify(graphJSON)
+    else:
+        return graphJSON
 
 @app.route("/real", methods=["GET"])
 def get_real():
@@ -131,7 +134,7 @@ def get_forecasted():
 @app.route("/plot", methods=["GET"])
 def plot():
 
-    return create_plot()
+    return create_plot(True)
 
 @app.route("/")
 def index():
