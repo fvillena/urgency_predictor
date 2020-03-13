@@ -1,4 +1,5 @@
 from selenium import webdriver
+from  selenium.common.exceptions import WebDriverException
 import os
 from pyvirtualdisplay import Display
 import logging
@@ -11,13 +12,18 @@ class Scraper:
     def __init__(self,wd):
         logger.info("starting scraper")
         self.wd = wd
-        display = Display(visible=0, size=(2880, 1800)).start()
+        self.display = Display(visible=0, size=(2880, 1800)).start()
         options = webdriver.ChromeOptions()
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-gpu')
         prefs = {'download.default_directory' : wd}
         options.add_experimental_option('prefs', prefs)
-        self.driver = webdriver.Chrome(options=options)
+        try:
+            self.driver = webdriver.Chrome(options=options)
+        except WebDriverException:
+            self.driver.quit()
+            self.display.stop()
+            logger.error("chrome crashed")
     def scrape(self, url=r"http://cognos.deis.cl/ibmcognos/cgi-bin/cognos.cgi?b_action=cognosViewer&ui.action=run&ui.object=%2fcontent%2ffolder%5b%40name%3d%27PUB%27%5d%2ffolder%5b%40name%3d%27REPORTES%27%5d%2ffolder%5b%40name%3d%27Atenciones%20de%20Urgencia%27%5d%2freport%5b%40name%3d%27Atenciones%20Urgencia%20-%20Vista%20diaria%20-%20Servicios%27%5d&ui.name=Atenciones%20Urgencia%20-%20Vista%20diaria%20-%20Servicios&run.outputFormat=&run.prompt=true"):
         logger.info("initial page")
         self.driver.get(url)
@@ -44,6 +50,7 @@ class Scraper:
                 break
             if (current_time - start_time) > 30:
                 self.driver.quit()
+                self.display.stop()
                 raise TimeoutError('button timeout') 
         logger.info("downloading file")
         start_time = time.time()
@@ -56,7 +63,9 @@ class Scraper:
                     download_ready=True
                 if (current_time - start_time) > 30:
                     self.driver.quit()
+                    self.display.stop()
                     raise TimeoutError('download timeout')
         self.driver.quit()
+        self.display.stop()
         logger.info("closing scraper")
         return (downloaded_file_path)
