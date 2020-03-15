@@ -13,6 +13,7 @@ class Transformer:
         self.df = pd.read_excel(raw_data_file_path,skiprows=16,skipfooter=561,na_values=["-",0])
         self.df = self.df.melt(id_vars=['Total de atenciones de urgencia'])
         self.df.columns = ["category","date","value"]
+        self.df["value"] = pd.to_numeric(self.df["value"], errors='coerce')
         self.df = self.df[self.df["value"] > 4000]
         self.df.date = pd.to_datetime(self.df.date)
         self.df.dropna(inplace=True)
